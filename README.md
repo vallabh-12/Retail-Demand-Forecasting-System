@@ -51,19 +51,6 @@ flowchart LR
 
 The model comparison shows why experiment tracking matters: a simple baseline provides a reference point, while XGBoost performed best on the engineered feature set. 
 
-## Screenshots
-
-Add these screenshots to `docs/images/`:
-
-- `mlflow-runs.png`
-- `fastapi-docs.png`
-- `streamlit-forecast.png`
-- `streamlit-drift.png`
-
-```md
-
-
-
 
 ```
 
@@ -141,5 +128,5 @@ MIT License
 **Shrivallabha Patil**  
 Guildford, England, UK
 
-- GitHub: `https://github.com/vallabh-12`
-- LinkedIn: `https://www.linkedin.com/in/shrivallabha-patil/`
+- GitHub: https://github.com/vallabh-12
+- LinkedIn: https://www.linkedin.com/in/shrivallabha-patil/
