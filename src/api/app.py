@@ -3,10 +3,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
 import mlflow
-
+from pathlib import Path
 
 # IMPORTANT: replace this with your actual XGBoost run ID
-BEST_MODEL_URI = "runs:/dd759092ef2d4975902bdf03e28e9c8a/model"
+MODEL_PATH = Path("models/best_model")
 
 FEATURE_COLUMNS = [
     "daily_revenue",
@@ -25,7 +25,7 @@ mlflow.set_tracking_uri("sqlite:///mlflow.db")
 
 app = FastAPI(title="Retail Demand Forecast API")
 
-model = mlflow.pyfunc.load_model(BEST_MODEL_URI)
+model = mlflow.pyfunc.load_model(MODEL_PATH)
 
 
 class DemandRequest(BaseModel):
