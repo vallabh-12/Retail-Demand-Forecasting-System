@@ -11,7 +11,7 @@ from evidently.presets import DataDriftPreset
 
 
 # FastAPI endpoint (for local dev)
-API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
+API_URL = os.getenv("API_URL", "https://retail-demand-forecasting-system-7v3n.onrender.com/predict")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MONITORING_DIR = PROJECT_ROOT / "data" / "monitoring"
