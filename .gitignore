@@ -13,6 +13,7 @@ mlruns/
 
 artifacts/
 reports/*.html
+!reports/data_drift_report.html
 
 data/raw/*
 data/processed/*
@@ -20,6 +21,8 @@ data/monitoring/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/monitoring/.gitkeep
+!data/monitoring/reference.csv
+!data/monitoring/current.csv
 
 .streamlit/secrets.toml
 .vscode/
