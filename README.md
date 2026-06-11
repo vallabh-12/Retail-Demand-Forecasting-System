@@ -4,8 +4,8 @@ An end-to-end retail demand forecasting project built using messy transactional 
 
 ## Live Deployment
 
-- Streamlit app: https://retail-demand-forecasting-system-dwrveyb8hswekwjbyh7oez.streamlit.app/
-- FastAPI API docs: https://retail-demand-forecasting-system-7v3n.onrender.com/docs
+- Streamlit app: [Live demo][https://retail-demand-forecasting-system-dwrveyb8hswekwjbyh7oez.streamlit.app/]
+- FastAPI API docs: [API Documentation][https://retail-demand-forecasting-system-7v3n.onrender.com/docs]
 
 
 ## Overview
