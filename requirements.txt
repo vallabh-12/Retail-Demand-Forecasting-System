@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+streamlit
+requests
+pandas
+pyarrow
+scikit-learn
+xgboost
+mlflow
+duckdb
+evidently
+prophet
+joblib
+pydantic
+numpy

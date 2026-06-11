@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: retail_fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    container_name: retail_streamlit
+    depends_on:
+      - fastapi
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://fastapi:8000/predict
+    volumes:
+      - .:/app
