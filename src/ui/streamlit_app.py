@@ -1,8 +1,9 @@
 import os
-import requests
 from pathlib import Path
+import tempfile
 
 import pandas as pd
+import requests
 import streamlit as st
 import streamlit.components.v1 as components
 from evidently import Report
@@ -26,9 +27,7 @@ st.set_page_config(
 )
 
 st.title("📈 Retail Demand Forecast UI")
-st.write(
-    "This app sends your inputs to the FastAPI model server and shows the predicted demand."
-)
+st.write("This app sends your inputs to the FastAPI model server and shows the predicted demand.")
 
 st.header("Input features")
 
@@ -82,13 +81,21 @@ if REFERENCE_PATH.exists() and CURRENT_PATH.exists():
             current = pd.read_parquet(CURRENT_PATH)
 
             report = Report(metrics=[DataDriftPreset()])
-            drift_result = report.run(reference_data=reference, current_data=current)
+            eval_result = report.run(reference_data=reference, current_data=current)
 
-            if hasattr(drift_result, "get_html"):
-                html = drift_result.get_html()
+            with tempfile.NamedTemporaryFile(mode="w+b", suffix=".html", delete=False) as tmp:
+                temp_path = tmp.name
+
+            try:
+                eval_result.save_html(temp_path)
+                html = Path(temp_path).read_text(encoding="utf-8")
                 components.html(html, height=1000, scrolling=True)
-            else:
-                st.error("This Evidently version does not expose get_html() on the run result.")
+            finally:
+                try:
+                    Path(temp_path).unlink(missing_ok=True)
+                except Exception:
+                    pass
+
         except Exception as e:
             st.error(f"Failed to generate drift report: {e}")
 else:
