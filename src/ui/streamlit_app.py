@@ -6,7 +6,7 @@ import tempfile
 import streamlit.components.v1 as components
 
 from pathlib import Path
-from evidently.report import Report
+from evidently import Report
 from evidently.metric_preset import DataDriftPreset
 
 
