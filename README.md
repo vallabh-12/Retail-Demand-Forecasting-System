@@ -1,6 +1,6 @@
-# Retail-Demand-Forecasting-System
+# Retail Demand Forecasting MLOps System
 
-An end-to-end retail demand forecasting project built using messy transactional retail data. The system uses DuckDB SQL for cleaning and feature engineering, MLflow for experiment tracking, FastAPI for model serving, Evidently for drift monitoring, Streamlit for the frontend, and Docker Compose for containerized execution.
+An end-to-end retail demand forecasting project built using messy transactional retail data. The system uses DuckDB SQL for cleaning and feature engineering, MLflow for experiment tracking, FastAPI for model serving, Evidently for drift monitoring, Streamlit for the frontend, and Docker Compose for containerized execution. 
 
 ## Overview
 
@@ -49,26 +49,42 @@ flowchart LR
 | XGBoost | 3.06 | 20.02 | Best-performing model |
 | Prophet | 10505.95 | 15297.98 | Time-series benchmark |
 
-The model comparison shows why experiment tracking matters: a simple baseline provides a reference point, while XGBoost performed best on the engineered feature set.
+The model comparison shows why experiment tracking matters: a simple baseline provides a reference point, while XGBoost performed best on the engineered feature set. 
+
+## Screenshots
+
+Add these screenshots to `docs/images/`:
+
+- `mlflow-runs.png`
+- `fastapi-docs.png`
+- `streamlit-forecast.png`
+- `streamlit-drift.png`
+
+```md
 
 
 
+
+```
 
 ## Run Locally
 
 Install dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
-## Run the pipeline and train models:
+Run the pipeline and train models:
 
-
+```bash
 python -m src.ingest.download_data
 python -m src.data.run_duckdb_pipeline
 python -m src.features.make_train_test_split
 python -m src.train.train_linear
 python -m src.train.train_xgboost
 python -m src.train.train_prophet
+```
 
 ## Start MLflow:
 
@@ -78,20 +94,24 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db
 
 ## Start FastAPI:
 
+```bash
 uvicorn src.api.app:app --reload
-
+```
 
 ## Start Streamlit:
 
+```bash
 streamlit run src/ui/streamlit_app.py
+```
 
 ## Docker
 
 Run the frontend and backend together with Docker Compose:
 
+```bash
 docker compose build
 docker compose up
-
+```
 
 Then open:
 
@@ -102,7 +122,7 @@ Using separate Streamlit and FastAPI services with Docker Compose is a practical
 
 ## Monitoring
 
-The project includes data drift monitoring using Evidently. A drifted “current” dataset is simulated from the processed feature data, compared against reference data, and rendered as a visual report directly inside the Streamlit app. 
+The project includes data drift monitoring using Evidently. A drifted “current” dataset is simulated from the processed feature data, compared against reference data, and rendered as a visual report directly inside the Streamlit app.
 
 ## Future Improvements
 
@@ -121,5 +141,5 @@ MIT License
 **Shrivallabha Patil**  
 Guildford, England, UK
 
-- GitHub: https://github.com/vallabh-12
-- LinkedIn: https://www.linkedin.com/in/shrivallabha-patil/
+- GitHub: `https://github.com/vallabh-12`
+- LinkedIn: `https://www.linkedin.com/in/shrivallabha-patil/`
