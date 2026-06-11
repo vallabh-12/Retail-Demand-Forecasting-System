@@ -4,7 +4,7 @@ An end-to-end retail demand forecasting project built using messy transactional 
 
 ## Overview
 
-This project forecasts daily retail demand from real-world transactional data and demonstrates a complete MLOps workflow from raw data ingestion to live model serving and drift monitoring. The goal was to build something closer to a production-ready ML system rather than only training a model in a notebook. [web:365][web:371]
+This project forecasts daily retail demand from real-world transactional data and demonstrates a complete MLOps workflow from raw data ingestion to live model serving and drift monitoring. The goal was to build something closer to a production-ready ML system rather than only training a model in a notebook. 
 
 ## Dataset
 
