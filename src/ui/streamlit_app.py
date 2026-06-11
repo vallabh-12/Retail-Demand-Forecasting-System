@@ -1,21 +1,23 @@
-import requests
 import os
-import streamlit as st
-import pandas as pd
-import tempfile
-import streamlit.components.v1 as components
-
+import requests
 from pathlib import Path
+
+import pandas as pd
+import streamlit as st
+import streamlit.components.v1 as components
 from evidently import Report
 from evidently.presets import DataDriftPreset
 
-
-# FastAPI endpoint (for local dev)
-API_URL = os.getenv("API_URL", "https://retail-demand-forecasting-system-7v3n.onrender.com/predict")
+API_URL = os.getenv(
+    "API_URL",
+    "https://retail-demand-forecasting-system-7v3n.onrender.com/predict",
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MONITORING_DIR = PROJECT_ROOT / "data" / "monitoring"
 
+REFERENCE_PATH = MONITORING_DIR / "reference.parquet"
+CURRENT_PATH = MONITORING_DIR / "current.parquet"
 
 st.set_page_config(
     page_title="Retail Demand Forecast UI",
@@ -61,7 +63,7 @@ if st.button("Get forecast"):
     }
 
     try:
-        resp = requests.post(API_URL, json=payload, timeout=5)
+        resp = requests.post(API_URL, json=payload, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
             st.success(f"Predicted demand: **{data['forecast']:.2f} units**")
@@ -73,26 +75,20 @@ if st.button("Get forecast"):
 st.markdown("---")
 st.header("🔍 Data Drift Report")
 
-reference_path = MONITORING_DIR / "reference.parquet"
-current_path = MONITORING_DIR / "current.parquet"
-
-if reference_path.exists() and current_path.exists():
+if REFERENCE_PATH.exists() and CURRENT_PATH.exists():
     if st.button("Generate drift report"):
         try:
-            reference = pd.read_parquet(reference_path)
-            current = pd.read_parquet(current_path)
+            reference = pd.read_parquet(REFERENCE_PATH)
+            current = pd.read_parquet(CURRENT_PATH)
 
             report = Report(metrics=[DataDriftPreset()])
-            report.run(reference_data=reference, current_data=current)
+            drift_result = report.run(reference_data=reference, current_data=current)
 
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".html") as tmp:
-                report.save_html(tmp.name)
-
-            with open(tmp.name, "r", encoding="utf-8") as f:
-                html = f.read()
-
-            components.html(html, height=900, scrolling=True)
-
+            if hasattr(drift_result, "get_html"):
+                html = drift_result.get_html()
+                components.html(html, height=1000, scrolling=True)
+            else:
+                st.error("This Evidently version does not expose get_html() on the run result.")
         except Exception as e:
             st.error(f"Failed to generate drift report: {e}")
 else:
