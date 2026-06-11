@@ -6,9 +6,7 @@ An end-to-end retail demand forecasting project built using messy transactional 
 
 - Streamlit app: https://retail-demand-forecasting-system-dwrveyb8hswekwjbyh7oez.streamlit.app/
 - FastAPI API docs: https://retail-demand-forecasting-system-7v3n.onrender.com/docs
-- FastAPI predict endpoint: `https://your-fastapi-service-url/predict`
 
-These links make it easy for reviewers to test both the frontend and the deployed backend directly.
 
 ## Overview
 
