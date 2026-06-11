@@ -23,7 +23,24 @@ CURRENT_PATH = MONITORING_DIR / "current.parquet"
 st.set_page_config(
     page_title="Retail Demand Forecast UI",
     page_icon="📈",
-    layout="centered",
+    layout="wide",
+)
+
+st.markdown(
+    """
+    <style>
+    .block-container {
+        max-width: 95rem;
+        padding-top: 2rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    iframe {
+        width: 100% !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 st.title("📈 Retail Demand Forecast UI")
@@ -89,7 +106,12 @@ if REFERENCE_PATH.exists() and CURRENT_PATH.exists():
             try:
                 eval_result.save_html(temp_path)
                 html = Path(temp_path).read_text(encoding="utf-8")
-                components.html(html, height=1000, scrolling=True)
+
+                components.html(
+                    html,
+                    height=1200,
+                    scrolling=True,
+                )
             finally:
                 try:
                     Path(temp_path).unlink(missing_ok=True)
