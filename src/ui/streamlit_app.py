@@ -46,6 +46,16 @@ st.markdown(
 st.title("📈 Retail Demand Forecast UI")
 st.write("This app sends your inputs to the FastAPI model server and shows the predicted demand.")
 
+try:
+    base_api_url = API_URL.rsplit("/predict", 1)[0]
+    health_resp = requests.get(base_api_url + "/docs", timeout=5)
+    if health_resp.status_code == 200:
+        st.success("API status: Connected")
+    else:
+        st.warning("API status: API reachable, but check endpoint setup.")
+except Exception:
+    st.error("API status: Cannot reach FastAPI service")
+
 st.header("Input features")
 
 col1, col2 = st.columns(2)
@@ -79,7 +89,8 @@ if st.button("Get forecast"):
     }
 
     try:
-        resp = requests.post(API_URL, json=payload, timeout=15)
+        with st.spinner("Generating forecast..."):
+            resp = requests.post(API_URL, json=payload, timeout=15)
         if resp.status_code == 200:
             data = resp.json()
             st.success(f"Predicted demand: **{data['forecast']:.2f} units**")
@@ -90,33 +101,43 @@ if st.button("Get forecast"):
 
 st.markdown("---")
 st.header("🔍 Data Drift Report")
+st.caption(
+    "This compares the current monitoring data with the reference dataset. "
+    "If drift is detected in many columns, it may indicate that the live data is changing from the training pattern."
+)
 
 if REFERENCE_PATH.exists() and CURRENT_PATH.exists():
     if st.button("Generate drift report"):
         try:
-            reference = pd.read_parquet(REFERENCE_PATH)
-            current = pd.read_parquet(CURRENT_PATH)
+            with st.spinner("Generating live drift report..."):
+                reference = pd.read_parquet(REFERENCE_PATH)
+                current = pd.read_parquet(CURRENT_PATH)
 
-            report = Report(metrics=[DataDriftPreset()])
-            eval_result = report.run(reference_data=reference, current_data=current)
+                report = Report(metrics=[DataDriftPreset()])
+                eval_result = report.run(reference_data=reference, current_data=current)
 
-            with tempfile.NamedTemporaryFile(mode="w+b", suffix=".html", delete=False) as tmp:
-                temp_path = tmp.name
+                with tempfile.NamedTemporaryFile(mode="w+b", suffix=".html", delete=False) as tmp:
+                    temp_path = tmp.name
 
-            try:
-                eval_result.save_html(temp_path)
-                html = Path(temp_path).read_text(encoding="utf-8")
-
-                components.html(
-                    html,
-                    height=1200,
-                    scrolling=True,
-                )
-            finally:
                 try:
-                    Path(temp_path).unlink(missing_ok=True)
-                except Exception:
-                    pass
+                    eval_result.save_html(temp_path)
+                    html = Path(temp_path).read_text(encoding="utf-8")
+
+                    components.html(
+                        html,
+                        height=1200,
+                        scrolling=True,
+                    )
+                finally:
+                    try:
+                        Path(temp_path).unlink(missing_ok=True)
+                    except Exception:
+                        pass
+
+            st.info(
+                "Interpretation tip: if drift is detected for 0 out of 13 columns, "
+                "the current data is statistically similar to the reference data."
+            )
 
         except Exception as e:
             st.error(f"Failed to generate drift report: {e}")
