@@ -7,7 +7,7 @@ import streamlit.components.v1 as components
 
 from pathlib import Path
 from evidently import Report
-from evidently.metric_preset import DataDriftPreset
+from evidently.presets import DataDriftPreset
 
 
 # FastAPI endpoint (for local dev)
