@@ -91,11 +91,51 @@ if st.button("Get forecast"):
     try:
         with st.spinner("Generating forecast..."):
             resp = requests.post(API_URL, json=payload, timeout=15)
+
         if resp.status_code == 200:
             data = resp.json()
-            st.success(f"Predicted demand: **{data['forecast']:.2f} units**")
+            forecast = float(data["forecast"])
+
+            st.markdown("---")
+            st.subheader("Forecast result")
+            st.caption("Predicted daily demand based on the selected business conditions.")
+
+            metric_col, insight_col = st.columns([1, 2])
+
+            with metric_col:
+                st.metric("Forecasted demand", f"{forecast:.2f} units")
+
+            with insight_col:
+                if forecast < 50:
+                    st.info(
+                        f"The system forecasts low demand at about {forecast:.2f} units for this scenario. "
+                        "This suggests lighter stock requirements for the selected day."
+                    )
+                    st.caption("Business interpretation: low-demand day.")
+                    st.success("Suggested action: low replenishment may be enough, but keep minimum safety stock.")
+                elif forecast < 100:
+                    st.info(
+                        f"The system forecasts moderate demand at about {forecast:.2f} units for this scenario. "
+                        "This suggests normal inventory planning should generally be sufficient."
+                    )
+                    st.caption("Business interpretation: normal-demand day.")
+                    st.success("Suggested action: keep normal stock levels and monitor sales as usual.")
+                else:
+                    st.warning(
+                        f"The system forecasts high demand at about {forecast:.2f} units for this scenario. "
+                        "This suggests stronger inventory planning may be needed to avoid stockouts."
+                    )
+                    st.caption("Business interpretation: high-demand day.")
+                    st.warning("Suggested action: consider increasing replenishment or buffer stock.")
+
+            st.caption(
+                "All values represent an estimated daily demand forecast. "
+                "This output should support planning decisions rather than replace business judgment."
+            )
+
         else:
             st.error(f"API error {resp.status_code}: {resp.text}")
+
     except Exception as e:
         st.error(f"Error contacting API: {e}")
 
